@@ -120,4 +120,4 @@ ESCALA DE CALIFICACIÓN
 ⭐⭐ (2 estrellas): Por Debajo de las Expectativas
 ⭐⭐⭐ (3 estrellas): Cumple las Expectativas
 ⭐⭐⭐⭐ (4 estrellas): Supera las Expectativas
-⭐⭐⭐⭐⭐ (5 estrellas): Desempeño Excepcional
+⭐⭐⭐⭐⭐ (5 estrellas): Desempeño Excepciona

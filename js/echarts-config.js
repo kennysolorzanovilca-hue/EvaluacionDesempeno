@@ -8,9 +8,10 @@ APP.createDashboardContainer = () => {
   dash.className = 'bg-white p-6 rounded-lg shadow-md mb-6';
   dash.innerHTML = `
     <h2 class="text-xl font-bold text-gray-800 mb-4">Dashboard — Promedios de Evaluación</h2>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <div id="chart-radar" style="height:360px;"></div>
       <div id="chart-gauge" style="height:360px;"></div>
+      <div id="chart-kpi-bar" style="height:360px;"></div>
     </div>
   `;
   appContainer.appendChild(dash);
@@ -69,19 +70,8 @@ APP.renderDashboard = () => {
       type: 'gauge',
       min: 0,
       max: 5,
-      progress: {
-        show: true,
-        width: 18,
-        itemStyle: {
-          color: perfLevel.color
-        }
-      },
-      axisLine: {
-        lineStyle: {
-          width: 18,
-          color: [[overall / 5, perfLevel.color], [1, '#e5e7eb']] // Dynamic color based on score
-        }
-      },
+      progress: { show: true, width: 18 },
+      axisLine: { lineStyle: { width: 18 } },
       pointer: { length: '70%', width: 6 },
       detail: { valueAnimation: true, formatter: '{value}', fontSize: 18 },
       data: [{ value: overall, name: 'Global' }]
@@ -89,19 +79,64 @@ APP.renderDashboard = () => {
   };
   gaugeChart.setOption(gaugeOption);
 
-  const charts = [radarChart, gaugeChart];
+  const kpiGaugeDom = document.getElementById('chart-kpi-bar'); // Reusing the div
+  const kpiGaugeChart = echarts.init(kpiGaugeDom);
+  const kpiGaugeOption = {
+    title: { text: 'Score Ponderado KPI', left: 'center', textStyle: { fontSize: 14 } },
+    series: [{
+        type: 'gauge',
+        min: 0,
+        max: 100, // Weighted score is 0-100
+        progress: { show: true, width: 18 },
+        axisLine: { lineStyle: { width: 18 } },
+        pointer: { length: '70%', width: 6 },
+        detail: { valueAnimation: true, formatter: '{value}%', fontSize: 18 },
+        data: [{ value: 0, name: 'KPI Score' }]
+    }]
+  };
+  kpiGaugeChart.setOption(kpiGaugeOption);
+
+
+  const charts = [radarChart, gaugeChart, kpiGaugeChart];
   const resizeAll = () => charts.forEach(c => c && c.resize());
   window.removeEventListener('resize', resizeAll);
   window.addEventListener('resize', resizeAll);
 
-  if (window.__dashboardInterval) clearInterval(window.__dashboardInterval);
-  window.__dashboardInterval = setInterval(() => {
+  APP.updateAllCharts = () => {
     const newAvgs = APP.computeAverages();
     const newOverall = parseFloat(APP.calculateOverallScore()) || 0;
+    const newPerfLevel = APP.getPerformanceLevel(newOverall);
+    
+    radarChart.setOption({ series: [{ data: [{ value: newAvgs }] }] });
+    
+    gaugeChart.setOption({ 
+        series: [{ 
+            data: [{ value: newOverall }],
+            progress: { itemStyle: { color: newPerfLevel.color } },
+            axisLine: { lineStyle: { color: [[newOverall / 5, newPerfLevel.color], [1, '#e5e7eb']] } }
+        }] 
+    });
 
-    radarChart.setOption({ series: [{ data: [{ value: newAvgs, name: 'Promedio (1-5)' }] }] });
-    gaugeChart.setOption({ series: [{ data: [{ value: newOverall, name: 'Global' }] }] });
+    // Update KPI Gauge Chart
+    const kpis = APP.calculateAllKpis();
+    const weightedScore = parseFloat(kpis.weightedScore) || 0;
+    const kpiScoreLevel = APP.getFinalKpiScore(weightedScore);
+    let kpiColor = '#d1d5db'; // Default gray
+    if (kpiScoreLevel.value === '5/5') kpiColor = '#16a34a'; // green-600
+    else if (kpiScoreLevel.value === '4/5') kpiColor = '#22c55e'; // green-500
+    else if (kpiScoreLevel.value === '3/5') kpiColor = '#facc15'; // yellow-400
+    else if (kpiScoreLevel.value === '2/5') kpiColor = '#f97316'; // orange-500
+    else if (kpiScoreLevel.value === '1/5') kpiColor = '#ef4444'; // red-500
 
-    overall = newOverall;
-  }, 1000);
+    kpiGaugeChart.setOption({
+        series: [{
+            data: [{ value: weightedScore }],
+            progress: { itemStyle: { color: kpiColor } },
+            axisLine: { lineStyle: { color: [[weightedScore / 100, kpiColor], [1, '#e5e7eb']] } }
+        }]
+    });
+  };
+
+  if (window.__dashboardInterval) clearInterval(window.__dashboardInterval);
+  window.__dashboardInterval = setInterval(APP.updateAllCharts, 1000);
 };

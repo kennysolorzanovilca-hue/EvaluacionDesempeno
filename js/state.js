@@ -6,7 +6,7 @@ APP.comments = { kpis: '', strengths: '', improvement: '', development: '' };
 APP.empForm = { name: '', code: '', area: '', specialization: '', supervisor: '', period: '', date: '' };
 
 APP.saveState = () => {
-  const payload = { ratings: APP.ratings, comments: APP.comments, expandedSections: APP.expandedSections, empForm: APP.empForm, version: 2 };
+  const payload = { ratings: APP.ratings, comments: APP.comments, expandedSections: APP.expandedSections, empForm: APP.empForm, kpiState: APP.kpiState, version: 2 };
   try {
     localStorage.setItem(APP.STORAGE_KEY, JSON.stringify(payload));
   } catch (_) {
@@ -23,6 +23,7 @@ APP.loadState = () => {
     APP.comments = data.comments || APP.comments;
     APP.expandedSections = data.expandedSections || APP.expandedSections;
     APP.empForm = data.empForm || APP.empForm;
+    APP.kpiState = data.kpiState || APP.kpiState;
   } catch (_) {
     console.error("Failed to load state from localStorage.");
   }
@@ -34,5 +35,6 @@ APP.clearState = () => {
   APP.comments = { kpis: '', strengths: '', improvement: '', development: '' };
   APP.expandedSections = {};
   APP.empForm = { name: '', code: '', area: '', specialization: '', supervisor: '', period: '', date: '' };
+  APP.kpiState = {};
   APP.init(true);
 };

@@ -136,6 +136,9 @@ const APP = {
         </div>
       </div>
 
+      <!-- KPI Section Placeholder -->
+      <div id="kpi-section-container"></div>
+
       <!-- Áreas abiertas -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 no-print-grid">
         <div class="bg-white p-6 rounded-lg shadow-md"><h2 class="text-xl font-bold text-gray-800 mb-4">Cumplimiento de Objetivos y KPIs</h2><textarea id="comment-kpis" class="w-full border border-gray-300 rounded-lg px-4 py-3 min-h-32 focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Describa el cumplimiento de objetivos específicos...\n"style= "min-height: 10rem">${APP.comments.kpis || ''}</textarea></div>
@@ -181,6 +184,7 @@ const APP = {
       });
     }
 
+    APP.initKpiSection();
     APP.renderDashboard();
   },
 };
