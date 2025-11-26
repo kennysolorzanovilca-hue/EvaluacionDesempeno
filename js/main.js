@@ -25,8 +25,7 @@ const APP = {
             <button type="button" id="print-button" class="print-button bg-white text-blue-700 px-3 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors flex items-center gap-2 shadow">
               ${APP.getIconSVG('Printer', 'text-blue-700', 18)} Imprimir
             </button>
-            <input id="import-input" type="file" accept="application/json" class="hidden" />
-            <button type="button" id="import-button" class="bg-white/90 text-blue-700 px-3 py-2 rounded-lg font-semibold hover:bg-white transition-colors shadow flex items-center gap-2">${APP.getIconSVG('Upload', 'text-blue-700', 16)} Importar</button>
+            <button type="button" id="save-button" class="bg-blue-600 text-white px-3 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow flex items-center gap-2">${APP.getIconSVG('Save', 'text-white', 16)} Guardar</button>
             <button type="button" id="export-json-button" class="bg-white/90 text-blue-700 px-3 py-2 rounded-lg font-semibold hover:bg-white transition-colors shadow flex items-center gap-2">${APP.getIconSVG('Download', 'text-blue-700', 16)} Exportar JSON</button>
             <button type="button" id="export-csv-button" class="bg-white/90 text-blue-700 px-3 py-2 rounded-lg font-semibold hover:bg-white transition-colors shadow flex items-center gap-2">${APP.getIconSVG('Download', 'text-blue-700', 16)} Finalizar y Descargar CSV</button>
             <button type="button" id="clear-button" class="bg-white/90 text-rose-600 px-3 py-2 rounded-lg font-semibold hover:bg-white transition-colors shadow">Limpiar</button>
@@ -170,19 +169,10 @@ const APP = {
     APP.updateOverallScoreDisplay();
 
     document.getElementById('print-button').addEventListener('click', () => window.print());
-    document.getElementById('import-button').addEventListener('click', () => document.getElementById('import-input').click());
+    document.getElementById('save-button').addEventListener('click', APP.saveEvaluation);
     document.getElementById('export-json-button').addEventListener('click', APP.exportJSON);
     document.getElementById('export-csv-button').addEventListener('click', APP.exportCSV);
     document.getElementById('clear-button').addEventListener('click', APP.clearState);
-
-    const importInput = document.getElementById('import-input');
-    if (importInput) {
-      importInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files.length > 0) {
-          APP.importJSON(e.target.files[0]);
-        }
-      });
-    }
 
     APP.initKpiSection();
     APP.renderDashboard();

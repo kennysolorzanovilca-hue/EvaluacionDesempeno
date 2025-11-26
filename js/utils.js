@@ -10,7 +10,8 @@ APP.getIconSVG = (name, classes = 'text-white', size = 24) => {
     ChevronUp: '<path d="M18 15l-6-6-6 6"/>',
     Printer: '<path d="M6 9V2H18V9"/><path d="M6 18H18V12H6V18"/><path d="M6 12V9H18V12"/>',
     Download: '<path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M20 21H4"/>',
-    Upload: '<path d="M12 21V9"/><path d="M7 14l5-5 5 5"/><path d="M20 21H4"/>'
+    Upload: '<path d="M12 21V9"/><path d="M7 14l5-5 5 5"/><path d="M20 21H4"/>',
+    Save: '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>'
   };
   const path = icons[name] || '';
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="${classes}">${path}</svg>`;
@@ -170,4 +171,52 @@ APP.importJSON = (file) => {
     }
   };
   reader.readAsText(file);
+};
+
+APP.saveEvaluation = () => {
+  // 1. Gather all data into a single object
+  const evaluationData = {
+    employeeInfo: APP.empForm,
+    competencyRatings: APP.ratings,
+    kpiData: APP.kpiState,
+    generalComments: APP.comments,
+    calculated: {
+      overallScore: APP.calculateOverallScore(),
+      performanceLevel: APP.getPerformanceLevel(parseFloat(APP.calculateOverallScore())),
+      kpiMetrics: APP.calculateAllKpis()
+    },
+    savedAt: new Date().toISOString()
+  };
+
+  // 2. Log the data to the console for now
+  console.log("--- EVALUATION DATA TO BE SAVED ---");
+  console.log(JSON.stringify(evaluationData, null, 2));
+  console.log("------------------------------------");
+
+  // 3. Send the data to the backend API
+  fetch('http://localhost:3000/api/save-evaluation', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(evaluationData),
+  })
+  .then(response => {
+    if (!response.ok) {
+      // If the server response is not OK, throw an error to be caught by the .catch block
+      return response.json().then(err => { throw new Error(err.message || 'Error del servidor') });
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('Success:', data);
+    alert('Evaluación guardada con éxito en el servidor.');
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+    alert(`Error al guardar la evaluación: ${error.message}`);
+  });
+  
+  // 4. Show a confirmation to the user
+  // alert('Evaluación preparada para ser guardada. Revisa la consola del navegador (F12) para ver los datos.');
 };
