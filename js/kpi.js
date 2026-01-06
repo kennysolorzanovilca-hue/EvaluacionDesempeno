@@ -1,327 +1,171 @@
-
 // js/kpi.js
 
 APP.kpiTasks = [
-    { id: 'evaluacion_tecnica', name: '1.1 Evaluación técnica de historial de casos de fallo de equipos' },
-    { id: 'estudio_requerimientos', name: '1.2 Estudio de requerimientos de equipamiento físico de monitoreo' },
-    { id: 'pruebas_planta', name: '1.3 Pruebas en planta de desempeño de sensores críticos (Flow Keyence, Chino, Presión, Vibración y Velocímetro)' },
-    { id: 'analisis_datos', name: '1.4 Analisis de datos en sensores críticos' },
-    { id: 'pruebas_campo', name: '1.5 Pruebas en campo de funcionamiento de sensores críticos' },
-    { id: 'desarrollo_arquitectura', name: '1.6 Desarrollo de arquitectura del sistema general' },
-    { id: 'estructuracion_data', name: '1.7 Estructuración de la data a recabar' },
-    { id: 'cotizacion_requerimientos', name: '1.8 Cotización de los requerimientos de equipamiento físico' },
-    { id: 'licencias_software', name: '1.9 Licencias de software' },
-    { id: 'diseno_arquitectura_apps', name: '1.10 Diseño de arquitectura de aplicativos web y móvil del sistema' },
-    { id: 'creacion_repositorios', name: '1.11 Creación de estructura de repositorios de codigo fuente' },
-    { id: 'despliegue_cloud', name: '1.12 Despliegue de proyecto base en cloud' },
-    { id: 'desarrollo_beta_gateway', name: '1.12 Desarrollo Beta 01 - Gateway IoT RESEMIN' },
-    { id: 'evaluacion_servicios_nube', name: '1.13 Evaluación de los requerimientos en servicios en la nube(Copilot, chatGPT)' },
-    { id: 'desarrollo_chatbot', name: '1.14 Desarrollo de ChatBot (Copilot)' },
-    { id: 'diseno_interfaces', name: '1.15 Diseño de interfaces de usuario de aplicativos' },
-    { id: 'adquisicion_instrumentacion', name: '1.16 Adquisición de instrumentación y componentes adjuntos de monitoreo' },
-    { id: 'adquisicion_networking', name: '1.17 Adquisición de equipamiento de networking' },
-    { id: 'adquisicion_recursos_nube', name: '1.18 Adquisición y despliegue de recursos informáticos en la nube' },
-    { id: 'desarrollo_apps', name: '1.19 Desarrollo de aplicativos web y móvil' },
-    { id: 'instalacion_networking', name: '1.20 Instalacion y configuración de equipos de networking' },
-    { id: 'configuracion_instrumentacion', name: '1.21 Configuración de instrumentación de monitoreo' },
-    { id: 'pruebas_networking', name: '1.22 Pruebas de networking y almacenamiento de datos de instrumentación en la nube' },
-    { id: 'adecuacion_equipos', name: '1.23 Adecuación de los equipos de instrumentación para su instalación' },
-    { id: 'pruebas_calibracion', name: '1.24 Pruebas de calibración de equipos de instrumentación' },
-    { id: 'pruebas_funcionalidades_apps', name: '1.25 Pruebas de funcionalidades en aplicativos movil y web' },
-    { id: 'pruebas_integracion', name: '1.26 Pruebas de integración y monitoreo de funcionamiento del sistema' },
-    { id: 'acompanamiento_resultados', name: '1.27 Acompañamiento de resultados en la Etapa 1' },
-    { id: 'monitoreo_avance', name: '1.28 Monitoreo de avance de actividades en la Etapa 1' }
+    { id: 'validacion_tecnica_sensores', name: 'VALIDACIÓN TÉCNICA DE SENSORES Y EQUIPAMIENTO', description: 'Completar evaluación de historial de fallos, estudio de requerimientos, pruebas en planta y campo de sensores críticos con análisis de datos que determine viabilidad técnica y especificaciones finales.' },
+    { id: 'validacion_diseño_arquitectura', name: 'VALIDACION DEL DISEÑO DE ARQUITECTURA TÉCNICA DEL SISTEMA', description: 'Estructuracion de datos, arquitectura de aplicativos web, repositorios de código fuente y evaluación de servicios clouD con documentación técnica completa.' },
+    { id: 'gestion_adquisiciones_presupuesto', name: 'GESTIÓN DE ADQUISICIONES Y PRESUPUESTO', description: 'Completar cotizaciones, adquisiciones de instrumentación, equipos de networking, licencias de software y recursos cloud dentro del presupuesto aprobado.' },
+    { id: 'desarrollo_componentes_software', name: 'DESARROLLO DE COMPONENTES DE SOFTWARE', description: 'Completar desarrollo y despliegue de Gateway IoT Beta 01, aplicativos web, proyecto base en cloud y diseño de interfaces según especificaciones técnicas.' },
+    { id: 'implementacion_integracion_marcha', name: 'IMPLEMENTACIÓN, INTEGRACIÓN Y PUESTA EN MARCHA', description: 'Completar instalación/configuración de networking, instrumentación, calibración de equipos, pruebas de integración, almacenamiento en cloud y entrega de sistema funcional end-to-end.' },
+    { id: 'desarrollo_automatizacion_ventas', name: 'DESARROLLO, AUTOMATIZACIÓN Y SOPORTE DE ATENCION DE VENTAS DE REPUESTOS PARA EL AREA DE PLANEAMIENTO', description: 'Implementar sistema automatizado usando Power Automate, Microsoft Forms y Planner con metodología Kanban operativa.' },
+    { id: 'propuestas_mejora_limpiador', name: 'PROPUESTAS TÉCNICAS DE MEJORA DE COMPONENTE LIMPIADOR B99', description: 'Propuesta de ingeniería y selección de materiales para mejora de base de limpiador de base de giro con análisis técnico y justificación.' },
+    { id: 'desarrollo_sistema_web_calidad', name: 'DESARROLLO DE SISTEMA WEB PARA ÁREA DE CALIDAD', description: 'Desarrollar e implementar sistema web funcional para procesos internos de Calidad con funcionalidades operativas según requerimientos del área.' }
 ];
 
-APP.kpiState = {}; // { taskId: { criticality: 'Normal', plannedDate: '', actualDate: '' } }
-
-APP.initKpiState = () => {
-    APP.kpiTasks.forEach(task => {
-        if (!APP.kpiState[task.id]) {
-            APP.kpiState[task.id] = {
-                criticality: 'Normal',
-                plannedDate: '',
-                actualDate: '',
-                justification: ''
-            };
-        }
-    });
-};
+APP.kpiRatings = {}; // { taskId: rating }
 
 // --- Calculation Logic ---
 
-APP.getKpiStatus = (plannedStr, actualStr) => {
-    if (!plannedStr || !actualStr) {
-        return { diff: null, diffText: '-', status: 'Pendiente', score: 0 };
-    }
-    const plannedDate = new Date(plannedStr);
-    const actualDate = new Date(actualStr);
-    const diffTime = actualDate.getTime() - plannedDate.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    let diffText, status, score;
-    if (diffDays < 0) {
-        diffText = `Adelantado por ${-diffDays} día(s)`;
-        status = 'Adelantado';
-        score = 110;
-    } else if (diffDays === 0) {
-        diffText = 'A tiempo';
-        status = 'Completado';
-        score = 100;
-    } else {
-        diffText = `Retraso de ${diffDays} día(s)`;
-        status = 'Retrasado';
-        if (diffDays <= 3) score = 80;
-        else if (diffDays <= 7) score = 60;
-        else score = 40;
-    }
-    return { diff: diffDays, diffText, status, score };
-};
-
-APP.getCriticalityWeight = (criticality) => {
-    const weights = { 'Critica': 3, 'Importante': 2, 'Normal': 1 };
-    return weights[criticality] || 1;
-};
-
-APP.calculateAllKpis = () => {
-    const totalTasks = APP.kpiTasks.length;
-    let completedOnTime = 0;
-    let criticalTasks = 0;
-    let criticalCompletedOnTime = 0;
-    let totalWeightedScore = 0;
-    let maxWeightedScore = 0;
-    let delaySum = 0;
-    let delayedTasksCount = 0;
-
-    APP.kpiTasks.forEach(task => {
-        const state = APP.kpiState[task.id] || {};
-        const { diff, status, score } = APP.getKpiStatus(state.plannedDate, state.actualDate);
-        const weight = APP.getCriticalityWeight(state.criticality);
-
-        const isCompleted = status === 'Completado' || status === 'Adelantado';
-
-        if (state.actualDate && state.plannedDate) {
-             if (isCompleted) {
-                completedOnTime++;
-            }
-        }
-
-        if (state.criticality === 'Critica') {
-            criticalTasks++;
-            if (isCompleted) {
-                criticalCompletedOnTime++;
-            }
-        }
-        
-        if (state.plannedDate) { // Only count tasks that have a plan
-            totalWeightedScore += (score * weight);
-            maxWeightedScore += (100 * weight);
-        }
-
-        if (status === 'Retrasado') {
-            delaySum += diff;
-            delayedTasksCount++;
-        }
-    });
-
-    const compliance = totalTasks > 0 ? (completedOnTime / totalTasks) * 100 : 0;
-    const weightedScore = maxWeightedScore > 0 ? (totalWeightedScore / maxWeightedScore) * 100 : 0;
-    const criticalCompliance = criticalTasks > 0 ? (criticalCompletedOnTime / criticalTasks) * 100 : 0;
-    const avgDelay = delayedTasksCount > 0 ? (delaySum / delayedTasksCount) : 0;
-
-    return {
-        compliance: compliance.toFixed(1),
-        weightedScore: weightedScore.toFixed(1),
-        criticalCompliance: criticalCompliance.toFixed(1),
-        avgDelay: avgDelay.toFixed(1)
-    };
-};
-
-APP.getFinalKpiScore = (weightedScore) => {
-    if (weightedScore >= 90) return { text: 'Excelente', value: '5/5' };
-    if (weightedScore >= 75) return { text: 'Bueno', value: '4/5' };
-    if (weightedScore >= 60) return { text: 'Aceptable', value: '3/5' };
-    if (weightedScore >= 40) return { text: 'Necesita Mejora', value: '2/5' };
-    return { text: 'Insuficiente', value: '1/5' };
+APP.calculateKpiAverage = () => {
+    const ratings = Object.values(APP.kpiRatings);
+    if (ratings.length === 0) return '0.0';
+    const sum = ratings.reduce((acc, rating) => acc + rating, 0);
+    const avg = sum / APP.kpiTasks.length; // Calculate average based on total tasks, not just rated ones
+    return avg.toFixed(1);
 };
 
 
 // --- Rendering Logic ---
 
 APP.renderKpiSummary = () => {
-    const kpis = APP.calculateAllKpis();
-    const finalScore = APP.getFinalKpiScore(kpis.weightedScore);
+    const average = APP.calculateKpiAverage();
+    const numAverage = parseFloat(average);
+    const performance = APP.getPerformanceLevel(numAverage);
 
     return `
-        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Etapa 1 KPI - Promedio</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 text-center">
-                <div class="p-4 bg-gray-50 rounded-lg">
-                    <h4 class="text-sm font-semibold text-gray-600">Cumplimiento General</h4>
-                    <p class="text-3xl font-bold text-blue-600">${kpis.compliance}%</p>
-                    <p class="text-xs text-gray-500">Tareas a tiempo / totales</p>
+        <div class="bg-white p-8 rounded-lg shadow-xl mb-6">
+            <div class="flex flex-col md:flex-row items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Evaluación de Tareas</h2>
+                <div id="kpi-level-container" class="px-6 py-3 rounded-lg ${performance.bg} mt-4 md:mt-0">
+                    <p class="text-sm font-semibold text-gray-600">Nivel de Desempeño</p>
+                    <p id="kpi-level-text" class="level-text text-2xl font-bold ${performance.color}">${performance.text}</p>
                 </div>
-                <div class="p-4 bg-gray-50 rounded-lg">
-                    <h4 class="text-sm font-semibold text-gray-600">Score Ponderado</h4>
-                    <p class="text-3xl font-bold text-purple-600">${kpis.weightedScore}%</p>
-                    <p class="text-xs text-gray-500">Puntaje por importancia</p>
-                </div>
-                <div class="p-4 bg-gray-50 rounded-lg">
-                    <h4 class="text-sm font-semibold text-gray-600">Tareas Críticas</h4>
-                    <p class="text-3xl font-bold text-red-600">${kpis.criticalCompliance}%</p>
-                    <p class="text-xs text-gray-500">Cumplimiento en hitos clave</p>
-                </div>
-                <div class="p-4 bg-gray-50 rounded-lg">
-                    <h4 class="text-sm font-semibold text-gray-600">Promedio de Retraso</h4>
-                    <p class="text-3xl font-bold text-orange-600">${kpis.avgDelay} días</p>
-                    <p class="text-xs text-gray-500">Demora media en tareas</p>
-                </div>
-                 <div class="p-4 bg-green-100 rounded-lg border border-green-300">
-                    <h4 class="text-sm font-semibold text-gray-600">Evaluación Final KPI</h4>
-                    <p class="text-3xl font-bold text-green-700">${finalScore.value}</p>
-                    <p class="text-xs text-gray-500 font-semibold">${finalScore.text}</p>
+            </div>
+            <div class="flex items-center justify-center">
+                <div class="text-center">
+                    <p id="kpi-score-number" class="text-7xl font-extrabold text-blue-600">${numAverage > 0 ? average : '-'}</p>
+                    <p class="text-gray-600 mt-2">de 5.0</p>
                 </div>
             </div>
         </div>
     `;
 };
 
+APP.renderKpiItem = (task) => {
+    const currentRating = APP.kpiRatings[task.id] || 0;
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'py-4 border-b border-gray-100 last:border-b-0';
+    itemDiv.innerHTML = `
+    <div class="flex justify-between items-start mb-2">
+      <div class="flex-1">
+        <h4 class="font-semibold text-gray-800 mb-1">${task.name}</h4>
+        <p class="text-sm text-gray-600">${task.description}</p>
+      </div>
+      <div class="ml-4 flex items-center">
+        <div id="stars-kpi-${task.id}" class="flex gap-1" role="radiogroup" aria-label="Puntaje ${task.name}"></div>
+        <span id="rating-number-kpi-${task.id}" class="ml-2 font-semibold text-lg text-gray-700 w-6 text-center">${currentRating > 0 ? currentRating : '-'}</span>
+      </div>
+    </div>`;
 
-APP.renderKpiTable = () => {
+    setTimeout(() => {
+        const starContainer = itemDiv.querySelector(`#stars-kpi-${task.id}`);
+        if (starContainer) {
+             for (let star = 1; star <= 5; star++) {
+                const btn = document.createElement('button');
+                btn.className = 'focus:outline-none transition-transform hover:scale-110';
+                btn.setAttribute('type', 'button');
+                btn.setAttribute('aria-label', `Puntuar ${star} estrellas`);
+                btn.innerHTML = APP.getIconSVG('Star', star <= currentRating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300', 24);
+                btn.onclick = () => APP.setKpiRating(task.id, star);
+                starContainer.appendChild(btn);
+            }
+        }
+    });
+
+    return itemDiv;
+};
+
+
+APP.renderKpiSectionContent = () => {
     const category = 'kpiTasks';
-    const isExpanded = !!APP.expandedSections[category];
-
-    const tableRows = APP.kpiTasks.map(task => {
-        const state = APP.kpiState[task.id] || { criticality: 'Normal', plannedDate: '', actualDate: '', justification: '' };
-        const { diffText, status } = APP.getKpiStatus(state.plannedDate, state.actualDate);
-        return `
-            <tr class="border-b border-gray-200">
-                <td class="py-2 px-4 text-sm text-gray-700 w-1/5">${task.name}</td>
-                <td class="py-2 px-4">
-                    <select data-task-id="${task.id}" data-field="criticality" class="w-full border border-gray-300 rounded-lg px-2 py-1 text-sm">
-                        <option value="Normal" ${state.criticality === 'Normal' ? 'selected' : ''}>Normal</option>
-                        <option value="Importante" ${state.criticality === 'Importante' ? 'selected' : ''}>Importante</option>
-                        <option value="Critica" ${state.criticality === 'Critica' ? 'selected' : ''}>Crítica</option>
-                    </select>
-                </td>
-                <td class="py-2 px-4">
-                    <div class="flex items-center gap-2">
-                        <label class="text-sm text-gray-500 w-14">Planeada:</label>
-                        <input type="date" data-task-id="${task.id}" data-field="plannedDate" value="${state.plannedDate}" class="w-full border border-gray-300 rounded-lg px-2 py-1 text-sm">
-                    </div>
-                    <div class="flex items-center gap-2 mt-1">
-                        <label class="text-sm text-gray-500 w-14">Real:</label>
-                        <input type="date" data-task-id="${task.id}" data-field="actualDate" value="${state.actualDate}" class="w-full border border-gray-300 rounded-lg px-2 py-1 text-sm">
-                    </div>
-                </td>
-                <td class="py-2 px-4 text-sm text-center" id="diff-${task.id}">${diffText}</td>
-                <td class="py-2 px-4 text-sm text-center" id="status-${task.id}">${status}</td>
-                <td class="py-2 px-4 w-1/4">
-                    <div id="justification-wrapper-${task.id}" class="${status !== 'Retrasado' ? 'hidden' : ''}">
-                        <textarea data-task-id="${task.id}" data-field="justification" class="w-full border border-gray-300 rounded-lg px-2 py-1 text-sm" placeholder="Sustento...">${state.justification || ''}</textarea>
-                    </div>
-                </td>
-            </tr>
-        `;
-    }).join('');
+    const isExpanded = APP.expandedSections[category] !== false; // Default to expanded
 
     const sectionDiv = document.createElement('div');
-    sectionDiv.className = 'bg-white rounded-lg shadow-md mb-6';
+    sectionDiv.className = 'competency-section mb-6 border border-gray-200 rounded-lg overflow-hidden shadow-sm';
+    sectionDiv.id = `section-${category}`;
 
     const headerButton = document.createElement('button');
     headerButton.type = 'button';
-    headerButton.className = 'w-full flex items-center justify-between p-6 text-xl font-bold text-gray-800';
+    headerButton.className = 'w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-gray-700 to-gray-800 hover:opacity-90 transition-opacity';
     headerButton.onclick = () => APP.toggleSection(category);
     headerButton.innerHTML = `
-        <span>Tareas a evaluar</span>
-        <div id="section-${category}-chevron">${APP.getIconSVG(isExpanded ? 'ChevronUp' : 'ChevronDown', 'text-gray-600', 24)}</div>
-    `;
-    
-    const tableContainer = document.createElement('div');
-    tableContainer.id = `section-${category}-content`;
-    tableContainer.style.display = isExpanded ? 'block' : 'none';
-    tableContainer.className = "overflow-x-auto p-6";
-    tableContainer.innerHTML = `
-        <table class="min-w-full bg-white">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="py-2 px-4 text-center text-sm font-semibold text-gray-600 w-4/12">Tarea</th>
-                    <th class="py-2 px-4 text-center text-sm font-semibold text-gray-600 w-1/12">Criticidad</th>
-                    <th class="py-2 px-4 text-center text-sm font-semibold text-gray-600 w-1/12">Fechas</th>
-                    <th class="py-2 px-4 text-center text-sm font-semibold text-gray-600 w-1/12">Diferencia</th>
-                    <th class="py-2 px-4 text-center text-sm font-semibold text-gray-600 w-1/12">Estado</th>
-                    <th class="py-2 px-4 text-center text-sm font-semibold text-gray-600 w-4/12">Sustento de Retraso</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${tableRows}
-            </tbody>
-        </table>
-    `;
-
+        <div class="flex items-center gap-3">
+          ${APP.getIconSVG('ClipboardCheck', 'text-white', 24)}
+          <h3 class="text-lg font-bold text-white">Tareas a Evaluar</h3>
+        </div>
+        <div class="flex items-center gap-4">
+          <span id="avg-${category}" class="bg-white px-4 py-1 rounded-full text-sm font-bold text-gray-700">Promedio: ${APP.calculateKpiAverage() || '-'}</span>
+          <div id="section-${category}-chevron" class="section-toggle-icon">${APP.getIconSVG(isExpanded ? 'ChevronUp' : 'ChevronDown', 'text-white', 24)}</div>
+        </div>`;
     sectionDiv.appendChild(headerButton);
-    sectionDiv.appendChild(tableContainer);
-    
+
+    const contentDiv = document.createElement('div');
+    contentDiv.id = `section-${category}-content`;
+    contentDiv.className = 'competency-section-content p-6 bg-white';
+    contentDiv.style.display = isExpanded ? 'block' : 'none';
+    APP.kpiTasks.forEach(task => contentDiv.appendChild(APP.renderKpiItem(task)));
+    sectionDiv.appendChild(contentDiv);
+
     return sectionDiv;
 };
 
-
-APP.updateKpiRow = (taskId) => {
-    const state = APP.kpiState[taskId] || {};
-    const { diffText, status } = APP.getKpiStatus(state.plannedDate, state.actualDate);
-    document.getElementById(`diff-${taskId}`).textContent = diffText;
-    document.getElementById(`status-${taskId}`).textContent = status;
-
-    const justificationWrapper = document.getElementById(`justification-wrapper-${taskId}`);
-    if (justificationWrapper) {
-        if (status === 'Retrasado') {
-            justificationWrapper.classList.remove('hidden');
-        } else {
-            justificationWrapper.classList.add('hidden');
-        }
+APP.setKpiRating = (taskId, rating) => {
+    // If the same star is clicked again, reset the rating
+    if (APP.kpiRatings[taskId] === rating) {
+        delete APP.kpiRatings[taskId];
+    } else {
+        APP.kpiRatings[taskId] = rating;
     }
+    APP.saveState();
+    APP.refreshKpiUi();
 };
 
-APP.refreshKpiSummary = () => {
+
+APP.refreshKpiUi = () => {
+    // Update stars for all KPI items
+    APP.kpiTasks.forEach(task => {
+        const currentRating = APP.kpiRatings[task.id] || 0;
+        const starContainer = document.getElementById(`stars-kpi-${task.id}`);
+        if (starContainer) {
+            const buttons = starContainer.querySelectorAll('button');
+            buttons.forEach((btn, index) => {
+                const star = index + 1;
+                btn.innerHTML = APP.getIconSVG('Star', star <= currentRating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300', 24);
+            });
+        }
+        const numberSpan = document.getElementById(`rating-number-kpi-${task.id}`);
+        if (numberSpan) {
+            numberSpan.textContent = currentRating > 0 ? currentRating : '-';
+        }
+    });
+
+    // Update average in the header
+    const avgSpan = document.getElementById('avg-kpiTasks');
+    if (avgSpan) {
+        avgSpan.textContent = `Promedio: ${APP.calculateKpiAverage() || '-'}`;
+    }
+
+    // Update summary section
     const summaryContainer = document.getElementById('kpi-summary-container');
     if (summaryContainer) {
         summaryContainer.innerHTML = APP.renderKpiSummary();
     }
-}
-
-APP.bindKpiEvents = () => {
-    const section = document.getElementById('kpi-section-container');
-    if (!section) return;
-
-    // Listener for date/select changes
-    section.addEventListener('change', (e) => {
-        const target = e.target;
-        if (target.dataset.taskId && (target.nodeName === 'SELECT' || target.nodeName === 'INPUT' && target.type === 'date')) {
-            const { taskId, field } = target.dataset;
-            APP.kpiState[taskId][field] = target.value;
-            
-            APP.updateKpiRow(taskId);
-            APP.refreshKpiSummary();
-            if (APP.updateAllCharts) {
-                APP.updateAllCharts();
-            }
-            APP.saveState();
-        }
-    });
-
-    // Listener for textarea input
-    section.addEventListener('input', (e) => {
-        const target = e.target;
-        if (target.dataset.taskId && target.nodeName === 'TEXTAREA') {
-            const { taskId, field } = target.dataset;
-            APP.kpiState[taskId][field] = target.value;
-            APP.saveState(); // Just save, no need to re-render everything
-        }
-    });
+     if (APP.updateAllCharts) {
+        APP.updateAllCharts();
+    }
 };
 
+
 APP.initKpiSection = () => {
-    APP.initKpiState();
     const container = document.getElementById('kpi-section-container');
     if (!container) return;
 
@@ -330,11 +174,11 @@ APP.initKpiSection = () => {
     const summaryContainer = document.createElement('div');
     summaryContainer.id = 'kpi-summary-container';
     summaryContainer.innerHTML = APP.renderKpiSummary();
-    
-    const tableElement = APP.renderKpiTable(); // renderKpiTable now returns a DOM element
+
+    const sectionElement = APP.renderKpiSectionContent();
 
     container.appendChild(summaryContainer);
-    container.appendChild(tableElement);
-
-    APP.bindKpiEvents();
+    container.appendChild(sectionElement);
+    
+    // No specific event binding needed here as clicks are set during rendering
 };

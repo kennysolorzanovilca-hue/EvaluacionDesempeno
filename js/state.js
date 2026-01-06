@@ -2,11 +2,19 @@ APP.STORAGE_KEY = 'evaluacion_desempeno_v2';
 
 APP.expandedSections = {}; // {category: boolean}
 APP.ratings = {};           // {'category-id': number}
+APP.kpiRatings = {};        // { 'taskId': rating }
 APP.comments = { kpis: '', strengths: '', improvement: '', development: '' };
 APP.empForm = { name: '', code: '', area: '', specialization: '', supervisor: '', period: '', date: '' };
 
 APP.saveState = () => {
-  const payload = { ratings: APP.ratings, comments: APP.comments, expandedSections: APP.expandedSections, empForm: APP.empForm, kpiState: APP.kpiState, version: 2 };
+  const payload = { 
+    ratings: APP.ratings, 
+    kpiRatings: APP.kpiRatings,
+    comments: APP.comments, 
+    expandedSections: APP.expandedSections, 
+    empForm: APP.empForm, 
+    version: 2 
+  };
   try {
     localStorage.setItem(APP.STORAGE_KEY, JSON.stringify(payload));
   } catch (_) {
@@ -20,21 +28,24 @@ APP.loadState = () => {
     if (!raw) return;
     const data = JSON.parse(raw);
     APP.ratings = data.ratings || APP.ratings;
+    APP.kpiRatings = data.kpiRatings || APP.kpiRatings;
     APP.comments = data.comments || APP.comments;
     APP.expandedSections = data.expandedSections || APP.expandedSections;
     APP.empForm = data.empForm || APP.empForm;
-    APP.kpiState = data.kpiState || APP.kpiState;
   } catch (_) {
     console.error("Failed to load state from localStorage.");
   }
 };
 
 APP.clearState = () => {
+  if (!confirm('¿Estás seguro de que quieres limpiar toda la evaluación? Esta acción no se puede deshacer.')) {
+    return;
+  }
   localStorage.removeItem(APP.STORAGE_KEY);
   APP.ratings = {};
+  APP.kpiRatings = {};
   APP.comments = { kpis: '', strengths: '', improvement: '', development: '' };
   APP.expandedSections = {};
   APP.empForm = { name: '', code: '', area: '', specialization: '', supervisor: '', period: '', date: '' };
-  APP.kpiState = {};
-  APP.init(true);
+  APP.init(true); // Re-initialize the app without reloading the page
 };
