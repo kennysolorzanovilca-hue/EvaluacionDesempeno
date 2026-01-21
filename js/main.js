@@ -9,21 +9,21 @@ const APP = {
     const perf = APP.getPerformanceLevel(parseFloat(overall));
 
     appContainer.innerHTML = `
-      <div class="bg-gradient-to-r from-blue-200 to-blue-400 p-6 sm:p-8 rounded-lg shadow-lg mb-6">
+      <div class="bg-gradient-to-r from-blue-600 to-blue-800 p-6 sm:p-8 rounded-lg shadow-lg mb-6 text-white">
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div class="flex flex-col  sm:items-center gap-4" style="width: 500px; margin-bottom: 2em;">
           <div> 
           <img src="IMG/RESEMIN-LOGO.png" alt="Logo Resemin" class="h-16 mx-auto sm:mx-0" />
           </div>
             <div class="text-center sm:text-left">
-              <h1 class="text-3xl font-bold text-gray-800">Evaluación de Desempeño</h1>
-              <p class="text-gray-600 text-lg">Sistema de Evaluación de Desempeño Anual</p>
+              <h1 class="text-3xl font-bold text-white">Evaluación de Desempeño</h1>
+              <p class="text-blue-100 text-lg">Sistema de Evaluación de Desempeño Anual</p>
             </div>
           </div>
           <div class="no-print flex flex-wrap justify-center sm:justify-end gap-4">
          
             <button type="button" id="print-button" class="print-button bg-white text-blue-700 px-3 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors flex items-center gap-2 shadow">
-              ${APP.getIconSVG('Printer', 'text-blue-700', 18)} Imprimir
+              ${APP.getIconSVG('Printer', 'text-blue-700', 18)} Exportar Reporte PDF
             </button>
             <button type="button" id="save-button" class="bg-blue-600 text-white px-3 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow flex items-center gap-2">${APP.getIconSVG('Save', 'text-white', 16)} Guardar</button>
             <button type="button" id="export-json-button" class="bg-white/90 text-blue-700 px-3 py-2 rounded-lg font-semibold hover:bg-white transition-colors shadow flex items-center gap-2">${APP.getIconSVG('Download', 'text-blue-700', 16)} Exportar JSON</button>
@@ -32,6 +32,7 @@ const APP = {
          
         </div>
       </div>
+    </div>
 
       <!-- Información del Evaluado -->
       <div class="bg-white p-6 rounded-lg shadow-md mb-6">
@@ -86,15 +87,18 @@ const APP = {
             <input id="emp-date" type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-primary focus:ring-1 focus:ring-primary" />
           </div>
           <div>
-            <label for="emp-period" class="block text-sm font-semibold text-gray-600 mb-1">Inicio de periodo</label>
-            <input id="emp-period" type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Ej: Enero 2025 - Diciembre 2025" />
+            <label for="emp-period-start" class="block text-sm font-semibold text-gray-600 mb-1">Inicio de periodo</label>
+            <input id="emp-period-start" type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-primary focus:ring-1 focus:ring-primary" />
           </div>
           <div>
-            <label for="emp-period" class="block text-sm font-semibold text-gray-600 mb-1">Fin de periodo</label>
-            <input id="emp-period" type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Ej: Enero 2025 - Diciembre 2025" />
+            <label for="emp-period-end" class="block text-sm font-semibold text-gray-600 mb-1">Fin de periodo</label>
+            <input id="emp-period-end" type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-primary focus:ring-1 focus:ring-primary" />
           </div>
         </div>
       </div>
+      
+      <!-- KPI Section Placeholder -->
+      <div id="kpi-section-container"></div>
 
       <!-- Leyenda de escala -->
       <div class="bg-white p-6 rounded-lg shadow-md mb-6">
@@ -126,17 +130,15 @@ const APP = {
             <p class="text-gray-600 mt-2">de 5.00</p>
           </div>
         </div>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-6">
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
           <div class="text-center p-4 bg-blue-50 rounded-lg"><p class="text-sm text-gray-600 mb-1">Competencias Técnicas</p><p id="overall-avg-technicalSkills" class="text-2xl font-bold text-blue-600">0.0</p></div>
           <div class="text-center p-4 bg-purple-50 rounded-lg"><p class="text-sm text-gray-600 mb-1">Habilidades Blandas</p><p id="overall-avg-softSkills" class="text-2xl font-bold text-purple-600">0.0</p></div>
           <div class="text-center p-4 bg-green-50 rounded-lg"><p class="text-sm text-gray-600 mb-1">Liderazgo y Colaboración</p><p id="overall-avg-leadershipCollaboration" class="text-2xl font-bold text-green-600">0.0</p></div>
           <div class="text-center p-4 bg-orange-50 rounded-lg"><p class="text-sm text-gray-600 mb-1">Orientación a Resultados</p><p id="overall-avg-resultsOrientation" class="text-2xl font-bold text-orange-600">0.0</p></div>
-          <div class="text-center p-4 bg-pink-50 rounded-lg"><p class="text-sm text-gray-600 mb-1">Desarrollo Profesional</p><p id="overall-avg-professionalDevelopment" class="text-2xl font-bold text-pink-600">0.0</p></div>
         </div>
       </div>
 
-      <!-- KPI Section Placeholder -->
-      <div id="kpi-section-container"></div>
+
 
       <!-- Áreas abiertas -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 no-print-grid">

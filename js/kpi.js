@@ -1,12 +1,12 @@
 // js/kpi.js
 
 APP.kpiTasks = [
-    { id: 'validacion_tecnica_sensores', name: 'VALIDACIÓN TÉCNICA DE SENSORES Y EQUIPAMIENTO', description: 'Completar evaluación de historial de fallos, estudio de requerimientos, pruebas en planta y campo de sensores críticos con análisis de datos que determine viabilidad técnica y especificaciones finales.' },
-    { id: 'validacion_diseño_arquitectura', name: 'VALIDACION DEL DISEÑO DE ARQUITECTURA TÉCNICA DEL SISTEMA', description: 'Estructuracion de datos, arquitectura de aplicativos web, repositorios de código fuente y evaluación de servicios clouD con documentación técnica completa.' },
+    { id: 'validacion_tecnica_sensores', name: 'SOPORTE TÉCNICA DE SENSORES Y EQUIPAMIENTO', description: 'Completar evaluación de historial de fallos, estudio de requerimientos, pruebas en planta y campo de sensores críticos con análisis de datos que determine viabilidad técnica y especificaciones finales.' },
+    { id: 'validacion_diseño_arquitectura', name: 'SOPORTE DE ARQUITECTURA TÉCNICA DEL SISTEMA', description: 'Soporte en logica de negocio y casos de uso de usuarios y documentación técnica completa.' },
     { id: 'gestion_adquisiciones_presupuesto', name: 'GESTIÓN DE ADQUISICIONES Y PRESUPUESTO', description: 'Completar cotizaciones, adquisiciones de instrumentación, equipos de networking, licencias de software y recursos cloud dentro del presupuesto aprobado.' },
-    { id: 'desarrollo_componentes_software', name: 'DESARROLLO DE COMPONENTES DE SOFTWARE', description: 'Completar desarrollo y despliegue de Gateway IoT Beta 01, aplicativos web, proyecto base en cloud y diseño de interfaces según especificaciones técnicas.' },
+    { id: 'desarrollo_componentes_software', name: 'SOPORTE Y DESARROLLO DE COMPONENTES DE SOFTWARE', description: 'Completar desarrollo y despliegue de Gateway IoT Beta 01, aplicativos web, proyecto base en cloud y diseño de interfaces según especificaciones técnicas.' },
     { id: 'implementacion_integracion_marcha', name: 'IMPLEMENTACIÓN, INTEGRACIÓN Y PUESTA EN MARCHA', description: 'Completar instalación/configuración de networking, instrumentación, calibración de equipos, pruebas de integración, almacenamiento en cloud y entrega de sistema funcional end-to-end.' },
-    { id: 'desarrollo_automatizacion_ventas', name: 'DESARROLLO, AUTOMATIZACIÓN Y SOPORTE DE ATENCION DE VENTAS DE REPUESTOS PARA EL AREA DE PLANEAMIENTO', description: 'Implementar sistema automatizado usando Power Automate, Microsoft Forms y Planner con metodología Kanban operativa.' },
+    { id: 'desarrollo_automatizacion_ventas', name: 'DESARROLLO, AUTOMATIZACIÓN Y SOPORTE DE ATENCION DE VENTAS DE REPUESTOS', description: 'Administracion de plataforma planner, para la atención de requerimientos de inspeccion de calidad' },
     { id: 'propuestas_mejora_limpiador', name: 'PROPUESTAS TÉCNICAS DE MEJORA DE COMPONENTE LIMPIADOR B99', description: 'Propuesta de ingeniería y selección de materiales para mejora de base de limpiador de base de giro con análisis técnico y justificación.' },
     { id: 'desarrollo_sistema_web_calidad', name: 'DESARROLLO DE SISTEMA WEB PARA ÁREA DE CALIDAD', description: 'Desarrollar e implementar sistema web funcional para procesos internos de Calidad con funcionalidades operativas según requerimientos del área.' }
 ];
@@ -69,7 +69,7 @@ APP.renderKpiItem = (task) => {
     setTimeout(() => {
         const starContainer = itemDiv.querySelector(`#stars-kpi-${task.id}`);
         if (starContainer) {
-             for (let star = 1; star <= 5; star++) {
+            for (let star = 1; star <= 5; star++) {
                 const btn = document.createElement('button');
                 btn.className = 'focus:outline-none transition-transform hover:scale-110';
                 btn.setAttribute('type', 'button');
@@ -159,7 +159,7 @@ APP.refreshKpiUi = () => {
     if (summaryContainer) {
         summaryContainer.innerHTML = APP.renderKpiSummary();
     }
-     if (APP.updateAllCharts) {
+    if (APP.updateAllCharts) {
         APP.updateAllCharts();
     }
 };
@@ -179,6 +179,6 @@ APP.initKpiSection = () => {
 
     container.appendChild(summaryContainer);
     container.appendChild(sectionElement);
-    
+
     // No specific event binding needed here as clicks are set during rendering
 };

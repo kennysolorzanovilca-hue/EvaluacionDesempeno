@@ -6,11 +6,67 @@ body { font-family: 'Inter', sans-serif; }
 
 /* Estilos para impresión */
 @media print {
-  .no-print, .print-button { display: none !important; }
-  .section-toggle-icon { display: none; }
-  .competency-section-content { display: block !important; }
-  .no-print-grid { grid-template-columns: 1fr !important; }
-  .competency-section { break-inside: avoid; }
-  .page-break { page-break-before: always; }
-  textarea { min-height: 100px; border: 1px solid #ddd; padding: 10px; }
+  @page {
+    size: A4;
+    margin: 1cm;
+  }
+  
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: white !important;
+  }
+
+  .no-print, .print-button, button, .section-toggle-icon {
+    display: none !important;
+  }
+
+  /* Forzar despliegue de secciones */
+  .competency-section-content {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* Mantener estructura de grid pero ajustada para PDF */
+  .no-print-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  /* Control de saltos de página */
+  .competency-section {
+    break-inside: avoid;
+    margin-bottom: 2rem;
+  }
+
+  #dashboard-container {
+    break-before: page;
+    margin-top: 2rem;
+  }
+
+  #dashboard-container h2 {
+    margin-bottom: 1rem;
+  }
+
+  .bg-white {
+    background-color: white !important;
+    border: 1px solid #e5e7eb !important;
+  }
+
+  /* Firmas siempre en bloque para evitar cortes */
+  .border-t-2 {
+    break-inside: avoid;
+  }
+
+  header, .bg-gradient-to-r {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  textarea {
+    min-height: 80px;
+    border: 1px solid #ddd !important;
+    overflow: hidden;
+  }
 }

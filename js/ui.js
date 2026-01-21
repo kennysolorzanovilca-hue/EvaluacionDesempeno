@@ -112,7 +112,7 @@ APP.updateOverallScoreDisplay = () => {
 };
 
 APP.bindEmpForm = () => {
-  const fields = ['name', 'code', 'area', 'specialization', 'supervisor', 'period', 'date'];
+  const fields = ['name', 'code', 'area', 'specialization', 'supervisor', 'period-start', 'period-end', 'date'];
   fields.forEach(f => {
     const el = document.getElementById(`emp-${f}`);
     if (!el) return;

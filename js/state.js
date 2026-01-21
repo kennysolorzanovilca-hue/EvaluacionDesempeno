@@ -4,16 +4,16 @@ APP.expandedSections = {}; // {category: boolean}
 APP.ratings = {};           // {'category-id': number}
 APP.kpiRatings = {};        // { 'taskId': rating }
 APP.comments = { kpis: '', strengths: '', improvement: '', development: '' };
-APP.empForm = { name: '', code: '', area: '', specialization: '', supervisor: '', period: '', date: '' };
+APP.empForm = { name: '', code: '', area: '', specialization: '', supervisor: '', 'period-start': '', 'period-end': '', date: '' };
 
 APP.saveState = () => {
-  const payload = { 
-    ratings: APP.ratings, 
+  const payload = {
+    ratings: APP.ratings,
     kpiRatings: APP.kpiRatings,
-    comments: APP.comments, 
-    expandedSections: APP.expandedSections, 
-    empForm: APP.empForm, 
-    version: 2 
+    comments: APP.comments,
+    expandedSections: APP.expandedSections,
+    empForm: APP.empForm,
+    version: 2
   };
   try {
     localStorage.setItem(APP.STORAGE_KEY, JSON.stringify(payload));
@@ -46,6 +46,6 @@ APP.clearState = () => {
   APP.kpiRatings = {};
   APP.comments = { kpis: '', strengths: '', improvement: '', development: '' };
   APP.expandedSections = {};
-  APP.empForm = { name: '', code: '', area: '', specialization: '', supervisor: '', period: '', date: '' };
+  APP.empForm = { name: '', code: '', area: '', specialization: '', supervisor: '', 'period-start': '', 'period-end': '', date: '' };
   APP.init(true); // Re-initialize the app without reloading the page
 };

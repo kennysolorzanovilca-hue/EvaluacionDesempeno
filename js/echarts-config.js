@@ -65,37 +65,67 @@ APP.renderDashboard = () => {
   const gaugeChart = echarts.init(gaugeDom);
   const perfLevel = APP.getPerformanceLevel(overall);
   const gaugeOption = {
-    title: { text: 'Puntaje Global', left: 'center', textStyle: { fontSize: 14 } },
+    title: { text: 'Puntaje Global', left: 'center', textStyle: { fontSize: 16, fontWeight: 'bold' } },
     series: [{
       type: 'gauge',
       min: 0,
       max: 5,
-      progress: { show: true, width: 18 },
-      axisLine: { lineStyle: { width: 18 } },
-      pointer: { length: '70%', width: 6 },
-      detail: { valueAnimation: true, formatter: '{value}', fontSize: 18 },
-      data: [{ value: overall, name: 'Global' }]
+      splitNumber: 5,
+      radius: '90%',
+      progress: { show: true, width: 20 },
+      axisLine: {
+        lineStyle: {
+          width: 20,
+          color: [
+            [0.2, '#ef4444'], // 1
+            [0.4, '#f97316'], // 2
+            [0.6, '#facc15'], // 3
+            [0.8, '#22c55e'], // 4
+            [1, '#16a34a']    // 5
+          ]
+        }
+      },
+      axisTick: { show: false },
+      splitLine: { distance: -20, length: 20, lineStyle: { color: '#fff', width: 2 } },
+      axisLabel: { distance: 25, color: '#999', fontSize: 14 },
+      anchor: { show: true, showAbove: true, size: 20, itemStyle: { borderWidth: 10 } },
+      pointer: { length: '80%', width: 8, itemStyle: { color: 'auto' } },
+      detail: { valueAnimation: true, formatter: '{value}', fontSize: 30, offsetCenter: [0, '70%'], color: 'auto' },
+      data: [{ value: overall, name: 'Promedio' }]
     }]
   };
   gaugeChart.setOption(gaugeOption);
 
-  const kpiGaugeDom = document.getElementById('chart-kpi-bar'); // Reusing the div
+  const kpiGaugeDom = document.getElementById('chart-kpi-bar');
   const kpiGaugeChart = echarts.init(kpiGaugeDom);
   const kpiGaugeOption = {
-    title: { text: 'Score Ponderado KPI', left: 'center', textStyle: { fontSize: 14 } },
+    title: { text: 'KPI Task Score', left: 'center', textStyle: { fontSize: 16, fontWeight: 'bold' } },
     series: [{
-        type: 'gauge',
-        min: 0,
-        max: 100, // Weighted score is 0-100
-        progress: { show: true, width: 18 },
-        axisLine: { lineStyle: { width: 18 } },
-        pointer: { length: '70%', width: 6 },
-        detail: { valueAnimation: true, formatter: '{value}%', fontSize: 18 },
-        data: [{ value: 0, name: 'KPI Score' }]
+      type: 'gauge',
+      min: 0,
+      max: 100,
+      radius: '90%',
+      progress: { show: true, width: 20 },
+      axisLine: {
+        lineStyle: {
+          width: 20,
+          color: [
+            [0.2, '#ef4444'],
+            [0.4, '#f97316'],
+            [0.6, '#facc15'],
+            [0.8, '#22c55e'],
+            [1, '#16a34a']
+          ]
+        }
+      },
+      axisTick: { show: false },
+      splitLine: { distance: -20, length: 20, lineStyle: { color: '#fff', width: 2 } },
+      axisLabel: { distance: 25, color: '#999', fontSize: 12 },
+      detail: { valueAnimation: true, formatter: '{value}%', fontSize: 30, offsetCenter: [0, '70%'], color: 'auto' },
+      data: [{ value: 0, name: 'KPI %' }]
     }]
   };
   kpiGaugeChart.setOption(kpiGaugeOption);
-
 
   const charts = [radarChart, gaugeChart, kpiGaugeChart];
   const resizeAll = () => charts.forEach(c => c && c.resize());
@@ -105,35 +135,17 @@ APP.renderDashboard = () => {
   APP.updateAllCharts = () => {
     const newAvgs = APP.computeAverages();
     const newOverall = parseFloat(APP.calculateOverallScore()) || 0;
-    const newPerfLevel = APP.getPerformanceLevel(newOverall);
-    
-    radarChart.setOption({ series: [{ data: [{ value: newAvgs }] }] });
-    
-    gaugeChart.setOption({ 
-        series: [{ 
-            data: [{ value: newOverall }],
-            progress: { itemStyle: { color: newPerfLevel.color } },
-            axisLine: { lineStyle: { color: [[newOverall / 5, newPerfLevel.color], [1, '#e5e7eb']] } }
-        }] 
-    });
 
-    // Update KPI Gauge Chart
-    const kpis = APP.calculateAllKpis();
-    const weightedScore = parseFloat(kpis.weightedScore) || 0;
-    const kpiScoreLevel = APP.getFinalKpiScore(weightedScore);
-    let kpiColor = '#d1d5db'; // Default gray
-    if (kpiScoreLevel.value === '5/5') kpiColor = '#16a34a'; // green-600
-    else if (kpiScoreLevel.value === '4/5') kpiColor = '#22c55e'; // green-500
-    else if (kpiScoreLevel.value === '3/5') kpiColor = '#facc15'; // yellow-400
-    else if (kpiScoreLevel.value === '2/5') kpiColor = '#f97316'; // orange-500
-    else if (kpiScoreLevel.value === '1/5') kpiColor = '#ef4444'; // red-500
+    radarChart.setOption({ series: [{ data: [{ value: newAvgs }] }] });
+    gaugeChart.setOption({ series: [{ data: [{ value: newOverall }] }] });
+
+    const kpiAvg = parseFloat(APP.calculateKpiAverage()) || 0;
+    const kpiPercent = (kpiAvg / 5) * 100;
 
     kpiGaugeChart.setOption({
-        series: [{
-            data: [{ value: weightedScore }],
-            progress: { itemStyle: { color: kpiColor } },
-            axisLine: { lineStyle: { color: [[weightedScore / 100, kpiColor], [1, '#e5e7eb']] } }
-        }]
+      series: [{
+        data: [{ value: kpiPercent.toFixed(1) }]
+      }]
     });
   };
 

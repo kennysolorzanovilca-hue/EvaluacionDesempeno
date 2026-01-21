@@ -37,7 +37,7 @@ APP.calculateAverage = (category, items) => {
 };
 
 APP.calculateOverallScore = () => {
-  const all = [...APP.technicalSkills, ...APP.softSkills, ...APP.leadershipCollaboration, ...APP.resultsOrientation, ...APP.professionalDevelopment];
+  const all = [...APP.technicalSkills, ...APP.softSkills, ...APP.leadershipCollaboration, ...APP.resultsOrientation];
   const vals = all.map(i => APP.getRating(i.category || 'default', i.id)).filter(v => v > 0);
   if (!vals.length) return 0;
   return (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2);
@@ -99,7 +99,8 @@ APP.exportCSV = () => {
   lines.push(['Empleado', 'Área', APP.empForm.area || '']);
   lines.push(['Empleado', 'Especialización', APP.empForm.specialization || '']);
   lines.push(['Empleado', 'Supervisor', APP.empForm.supervisor || '']);
-  lines.push(['Empleado', 'Periodo', APP.empForm.period || '']);
+  lines.push(['Empleado', 'Inicio Periodo', APP.empForm['period-start'] || '']);
+  lines.push(['Empleado', 'Fin Periodo', APP.empForm['period-end'] || '']);
   lines.push(['Empleado', 'Fecha Evaluación', APP.empForm.date || '']);
   lines.push([]);
   const overall = APP.calculateOverallScore();
@@ -201,22 +202,22 @@ APP.saveEvaluation = () => {
     },
     body: JSON.stringify(evaluationData),
   })
-  .then(response => {
-    if (!response.ok) {
-      // If the server response is not OK, throw an error to be caught by the .catch block
-      return response.json().then(err => { throw new Error(err.message || 'Error del servidor') });
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log('Success:', data);
-    alert('Evaluación guardada con éxito en el servidor.');
-  })
-  .catch((error) => {
-    console.error('Error:', error);
-    alert(`Error al guardar la evaluación: ${error.message}`);
-  });
-  
+    .then(response => {
+      if (!response.ok) {
+        // If the server response is not OK, throw an error to be caught by the .catch block
+        return response.json().then(err => { throw new Error(err.message || 'Error del servidor') });
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Success:', data);
+      alert('Evaluación guardada con éxito en el servidor.');
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      alert(`Error al guardar la evaluación: ${error.message}`);
+    });
+
   // 4. Show a confirmation to the user
   // alert('Evaluación preparada para ser guardada. Revisa la consola del navegador (F12) para ver los datos.');
 };
