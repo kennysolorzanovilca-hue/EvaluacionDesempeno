@@ -109,6 +109,32 @@ APP.updateOverallScoreDisplay = () => {
     const inner = levelContainer.querySelector('.level-text');
     if (inner) inner.className = `text-2xl font-bold ${level.color}`;
   }
+
+  // Render and update summary grid
+  APP.renderOverallSummaryGrid();
+};
+
+APP.renderOverallSummaryGrid = () => {
+  const container = document.getElementById('overall-categories-summary');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  APP.ALL_COMPETENCIES.forEach(s => {
+    const avg = APP.calculateAverage(s.category, s.competencies);
+    const colorClass = s.color.includes('blue') ? 'blue' :
+      s.color.includes('purple') ? 'purple' :
+        s.color.includes('green') ? 'green' :
+          s.color.includes('orange') ? 'orange' : 'cyan';
+
+    const div = document.createElement('div');
+    div.className = `text-center p-4 bg-${colorClass}-50 rounded-lg`;
+    div.innerHTML = `
+      <p class="text-sm text-gray-600 mb-1">${s.title}</p>
+      <p id="overall-avg-${s.category}" class="text-2xl font-bold text-${colorClass}-600">${avg || '0.0'}</p>
+    `;
+    container.appendChild(div);
+  });
 };
 
 APP.bindEmpForm = () => {
@@ -117,9 +143,21 @@ APP.bindEmpForm = () => {
     const el = document.getElementById(`emp-${f}`);
     if (!el) return;
     el.value = APP.empForm[f] || '';
-    el.addEventListener('input', (e) => {
+
+    // Use 'change' for select and 'input' for text/date
+    const eventType = el.tagName === 'SELECT' ? 'change' : 'input';
+
+    el.addEventListener(eventType, (e) => {
       APP.empForm[f] = e.target.value;
-      APP.saveState();
+
+      // If name changes, we need to update the competency data and re-render
+      if (f === 'name' && APP.userConfigs[e.target.value]) {
+        APP.updateUserData(e.target.value);
+        APP.saveState();
+        APP.init(true); // Re-initialize without wiping data
+      } else {
+        APP.saveState();
+      }
     });
   });
 };

@@ -37,10 +37,24 @@ APP.calculateAverage = (category, items) => {
 };
 
 APP.calculateOverallScore = () => {
-  const all = [...APP.technicalSkills, ...APP.softSkills, ...APP.leadershipCollaboration, ...APP.resultsOrientation];
-  const vals = all.map(i => APP.getRating(i.category || 'default', i.id)).filter(v => v > 0);
-  if (!vals.length) return 0;
-  return (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2);
+  // Aggregate all items from dynamic categories
+  const allCompItems = [];
+  APP.ALL_COMPETENCIES.forEach(sec => {
+    sec.competencies.forEach(c => allCompItems.push({ category: sec.category, id: c.id }));
+  });
+
+  const compVals = allCompItems.map(i => APP.getRating(i.category, i.id)).filter(v => v > 0);
+
+  // Also consider KPI average if we want it in the global score
+  // Based on instructions "Cálculo de promedio general de toda la evaluación"
+  // If we want a simple average of all rated items:
+
+  const kpiVals = APP.kpiTasks.map(task => APP.kpiRatings[task.id] || 0).filter(v => v > 0);
+
+  const totalVals = [...compVals, ...kpiVals];
+
+  if (!totalVals.length) return 0;
+  return (totalVals.reduce((a, b) => a + b, 0) / totalVals.length).toFixed(2);
 };
 
 APP.getPerformanceLevel = (score) => {

@@ -40,7 +40,11 @@ const APP = {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label for="emp-name" class="block text-sm font-semibold text-gray-600 mb-1">Nombre Completo</label>
-            <input id="emp-name" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Ingrese nombre completo" />
+            <select id="emp-name" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-primary focus:ring-1 focus:ring-primary">
+              <option value="">Seleccione un colaborador</option>
+              <option value="Kenny G. Solorzano Vilca">Kenny G. Solorzano Vilca</option>
+              <option value="Jonathan Albarran Ibañez">Jonathan Albarran Ibañez</option>
+            </select>
           </div>
           <div>
             <label for="emp-code" class="block text-sm font-semibold text-gray-600 mb-1">DNI de Empleado</label>
@@ -130,11 +134,8 @@ const APP = {
             <p class="text-gray-600 mt-2">de 5.00</p>
           </div>
         </div>
-        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-          <div class="text-center p-4 bg-blue-50 rounded-lg"><p class="text-sm text-gray-600 mb-1">Competencias Técnicas</p><p id="overall-avg-technicalSkills" class="text-2xl font-bold text-blue-600">0.0</p></div>
-          <div class="text-center p-4 bg-purple-50 rounded-lg"><p class="text-sm text-gray-600 mb-1">Habilidades Blandas</p><p id="overall-avg-softSkills" class="text-2xl font-bold text-purple-600">0.0</p></div>
-          <div class="text-center p-4 bg-green-50 rounded-lg"><p class="text-sm text-gray-600 mb-1">Liderazgo y Colaboración</p><p id="overall-avg-leadershipCollaboration" class="text-2xl font-bold text-green-600">0.0</p></div>
-          <div class="text-center p-4 bg-orange-50 rounded-lg"><p class="text-sm text-gray-600 mb-1">Orientación a Resultados</p><p id="overall-avg-resultsOrientation" class="text-2xl font-bold text-orange-600">0.0</p></div>
+        <div id="overall-categories-summary" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+          <!-- Dynamic categories will be rendered here -->
         </div>
       </div>
 
@@ -160,6 +161,12 @@ const APP = {
 
       <div class="text-center mt-8 text-sm text-gray-500"><p>Documento confidencial - Uso exclusivo para gestión de talento humano</p></div>
     `;
+
+    // Load data for the current name before rendering sections
+    const currentName = APP.empForm.name;
+    if (currentName && APP.userConfigs[currentName]) {
+      APP.updateUserData(currentName);
+    }
 
     const container = document.getElementById('competency-sections-container');
     container.innerHTML = '';
