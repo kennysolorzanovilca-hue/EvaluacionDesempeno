@@ -33,8 +33,11 @@ APP.setRating = (category, itemId, value) => {
 
 APP.calculateAverage = (category, items) => {
   const vals = items.map(i => APP.getRating(category, i.id)).filter(v => v > 0);
-  if (!vals.length) return '0.0';
-  const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+  if (!vals.length && items.length > 0) return '0.0';
+  if (items.length === 0) return '0.0';
+
+  const sum = vals.reduce((a, b) => a + b, 0);
+  const avg = sum / items.length; // Divide by total items in section
   return avg.toFixed(1);
 };
 
@@ -44,21 +47,17 @@ APP.calculateOverallScore = () => {
   // 1. Competency Section Averages
   APP.ALL_COMPETENCIES.forEach(sec => {
     const avg = parseFloat(APP.calculateAverage(sec.category, sec.competencies));
-    if (avg > 0) {
-      sectionAverages.push(avg);
-    }
+    sectionAverages.push(avg);
   });
 
   // 2. KPI Section Average
   const kpiAvg = parseFloat(APP.calculateKpiAverage());
-  if (kpiAvg > 0) {
-    sectionAverages.push(kpiAvg);
-  }
+  sectionAverages.push(kpiAvg);
 
   if (sectionAverages.length === 0) return '0.00';
 
   const sum = sectionAverages.reduce((a, b) => a + b, 0);
-  return (sum / sectionAverages.length).toFixed(2);
+  return (sum / sectionAverages.length).toFixed(2); // Always divide by total number of sections
 };
 
 APP.getPerformanceLevel = (score) => {
