@@ -8,10 +8,10 @@ APP.createDashboardContainer = () => {
   dash.className = 'bg-white p-6 rounded-lg shadow-md mb-6';
   dash.innerHTML = `
     <h2 class="text-xl font-bold text-gray-800 mb-4">Dashboard — Promedios de Evaluación</h2>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      <div id="chart-radar" style="height:360px;"></div>
-      <div id="chart-gauge" style="height:360px;"></div>
-      <div id="chart-kpi-bar" style="height:360px;"></div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4" style="display: flex; flex-direction: column; padding-bottom:2rem;">
+      <div id="chart-radar" style="height:400px;"></div>
+      <div id="chart-gauge" style="height:400px;"></div>
+      <div id="chart-kpi-bar" style="height:400px;"></div>
     </div>
   `;
   appContainer.appendChild(dash);
@@ -87,7 +87,7 @@ APP.renderDashboard = () => {
       },
       axisTick: { show: false },
       splitLine: { distance: -20, length: 20, lineStyle: { color: '#fff', width: 2 } },
-      axisLabel: { distance: 25, color: '#999', fontSize: 14 },
+      axisLabel: { distance: 35, color: '#999', fontSize: 14 },
       anchor: { show: true, showAbove: true, size: 20, itemStyle: { borderWidth: 10 } },
       pointer: { length: '80%', width: 8, itemStyle: { color: 'auto' } },
       detail: { valueAnimation: true, formatter: '{value}', fontSize: 30, offsetCenter: [0, '70%'], color: 'auto' },
@@ -120,7 +120,7 @@ APP.renderDashboard = () => {
       },
       axisTick: { show: false },
       splitLine: { distance: -20, length: 20, lineStyle: { color: '#fff', width: 2 } },
-      axisLabel: { distance: 25, color: '#999', fontSize: 12 },
+      axisLabel: { distance: 35, color: '#999', fontSize: 12 },
       detail: { valueAnimation: true, formatter: '{value}%', fontSize: 30, offsetCenter: [0, '70%'], color: 'auto' },
       data: [{ value: 0, name: 'KPI %' }]
     }]

@@ -120,6 +120,7 @@ APP.renderOverallSummaryGrid = () => {
 
   container.innerHTML = '';
 
+  // 1. Competency Categories
   APP.ALL_COMPETENCIES.forEach(s => {
     const avg = APP.calculateAverage(s.category, s.competencies);
     const colorClass = s.color.includes('blue') ? 'blue' :
@@ -128,13 +129,30 @@ APP.renderOverallSummaryGrid = () => {
           s.color.includes('orange') ? 'orange' : 'cyan';
 
     const div = document.createElement('div');
-    div.className = `text-center p-4 bg-${colorClass}-50 rounded-lg`;
+    div.className = `text-center p-4 bg-${colorClass}-50 rounded-lg border border-${colorClass}-100`;
     div.innerHTML = `
-      <p class="text-sm text-gray-600 mb-1">${s.title}</p>
+      <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">${s.title}</p>
       <p id="overall-avg-${s.category}" class="text-2xl font-bold text-${colorClass}-600">${avg || '0.0'}</p>
     `;
     container.appendChild(div);
   });
+
+  // 2. KPI Category
+  const kpiAvg = APP.calculateKpiAverage();
+  const kpiDiv = document.createElement('div');
+  kpiDiv.className = `text-center p-4 bg-gray-50 rounded-lg border border-gray-200`;
+  kpiDiv.innerHTML = `
+    <p class="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Tareas (KPIs)</p>
+    <p id="overall-avg-kpi" class="text-2xl font-bold text-gray-700">${kpiAvg || '0.0'}</p>
+  `;
+  container.appendChild(kpiDiv);
+
+  // Update container grid layout based on number of items
+  const itemCount = container.children.length;
+  container.className = `grid gap-4 mt-6 ${itemCount <= 4 ? 'grid-cols-2 md:grid-cols-4' :
+    itemCount === 5 ? 'grid-cols-2 md:grid-cols-5' :
+      'grid-cols-2 md:grid-cols-3 lg:grid-cols-6'
+    }`;
 };
 
 APP.bindEmpForm = () => {
@@ -188,7 +206,7 @@ APP.renderCompetencySection = (title, iconName, competencies, category, color) =
 
   const headerButton = document.createElement('button');
   headerButton.type = 'button';
-  headerButton.className = `w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r ${color} hover:opacity-90 transition-opacity`;
+  headerButton.className = `section-header w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r ${color} hover:opacity-90 transition-opacity`;
   headerButton.onclick = () => APP.toggleSection(category);
   headerButton.innerHTML = `
     <div class="flex items-center gap-3">

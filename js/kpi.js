@@ -11,9 +11,12 @@ if (!APP.kpiRatings) {
 // --- Calculation Logic ---
 
 APP.calculateKpiAverage = () => {
-    const ratings = Object.values(APP.kpiRatings);
-    if (ratings.length === 0) return '0.0';
-    const sum = ratings.reduce((acc, rating) => acc + rating, 0);
+    const activeRatings = APP.kpiTasks
+        .map(task => APP.kpiRatings[task.id] || 0)
+        .filter(v => v > 0);
+
+    if (activeRatings.length === 0) return '0.0';
+    const sum = activeRatings.reduce((acc, rating) => acc + rating, 0);
     const avg = sum / APP.kpiTasks.length; // Calculate average based on total tasks, not just rated ones
     return avg.toFixed(1);
 };
@@ -90,7 +93,7 @@ APP.renderKpiSectionContent = () => {
 
     const headerButton = document.createElement('button');
     headerButton.type = 'button';
-    headerButton.className = 'w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-gray-700 to-gray-800 hover:opacity-90 transition-opacity';
+    headerButton.className = 'section-header w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-gray-700 to-gray-800 hover:opacity-90 transition-opacity';
     headerButton.onclick = () => APP.toggleSection(category);
     headerButton.innerHTML = `
         <div class="flex items-center gap-3">
@@ -156,6 +159,9 @@ APP.refreshKpiUi = () => {
     }
     if (APP.updateAllCharts) {
         APP.updateAllCharts();
+    }
+    if (APP.updateOverallScoreDisplay) {
+        APP.updateOverallScoreDisplay();
     }
 };
 

@@ -17,36 +17,69 @@ body { font-family: 'Inter', sans-serif; }
     background-color: white !important;
   }
 
-  .no-print, .print-button, button, .section-toggle-icon {
+  .no-print, .print-button, button:not(.section-header), .section-toggle-icon {
     display: none !important;
   }
 
-  /* Forzar despliegue de secciones */
+  /* Forzar despliegue y estilo de secciones */
+  .section-header {
+    display: flex !important;
+    background-image: none !important;
+    background-color: #f1f5f9 !important; /* Gris muy claro para ahorrar tinta pero mantener estructura */
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 0.5rem 0.5rem 0 0 !important;
+    color: #1e293b !important;
+    padding: 0.75rem 1rem !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .section-header h3 {
+    color: #1e293b !important;
+    font-size: 1.1rem !important;
+  }
+
+  .section-header svg {
+    color: #475569 !important;
+  }
+
+  /* El promedio en el header debe ser visible */
+  .section-header span {
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #1e293b !important;
+  }
+
   .competency-section-content {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+    border: 1px solid #cbd5e1 !important;
+    border-top: none !important;
+    border-radius: 0 0 0.5rem 0.5rem !important;
+    background-color: white !important;
   }
 
   /* Mantener estructura de grid pero ajustada para PDF */
   .no-print-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1rem !important;
+    display: block !important;
+  }
+
+  .no-print-grid > div {
+    margin-bottom: 1.5rem;
+    break-inside: avoid;
   }
 
   /* Control de saltos de página */
   .competency-section {
     break-inside: avoid;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
 
   #dashboard-container {
     break-before: page;
     margin-top: 2rem;
-  }
-
-  #dashboard-container h2 {
-    margin-bottom: 1rem;
+    border: 1px solid #e5e7eb !important;
   }
 
   .bg-white {
@@ -54,19 +87,26 @@ body { font-family: 'Inter', sans-serif; }
     border: 1px solid #e5e7eb !important;
   }
 
-  /* Firmas siempre en bloque para evitar cortes */
+  /* Firmas y validación */
   .border-t-2 {
     break-inside: avoid;
-  }
-
-  header, .bg-gradient-to-r {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+    margin-top: 1rem;
   }
 
   textarea {
-    min-height: 80px;
-    border: 1px solid #ddd !important;
-    overflow: hidden;
+    min-height: 100px !important;
+    border: 1px solid #cbd5e1 !important;
+    overflow: hidden !important;
+    color: #1e293b !important;
+    background-color: #f8fafc !important;
+  }
+
+  /* Títulos de secciones de comentarios */
+  h2 {
+    color: #1e293b !important;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 0.5rem;
+    margin-top: 1rem;
+    font-size: 1.25rem !important;
   }
 }

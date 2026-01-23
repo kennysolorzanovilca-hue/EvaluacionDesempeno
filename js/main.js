@@ -104,18 +104,6 @@ const APP = {
       <!-- KPI Section Placeholder -->
       <div id="kpi-section-container"></div>
 
-      <!-- Leyenda de escala -->
-      <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Escala de Evaluación</h2>
-        <div class="grid grid-cols-5 gap-3">
-          <div class="text-center p-3 bg-red-50 rounded-lg border border-red-200">${APP.getIconSVG('Star', 'mx-auto mb-1 fill-red-400 text-red-400', 20)}<p class="font-bold text-red-600">1</p><p class="text-xs text-gray-600">Muy por debajo</p></div>
-          <div class="text-center p-3 bg-orange-50 rounded-lg border border-orange-200">${APP.getIconSVG('Star', 'mx-auto mb-1 fill-orange-400 text-orange-400', 20)}<p class="font-bold text-orange-600">2</p><p class="text-xs text-gray-600">Por debajo</p></div>
-          <div class="text-center p-3 bg-yellow-50 rounded-lg border border-yellow-200">${APP.getIconSVG('Star', 'mx-auto mb-1 fill-yellow-400 text-yellow-400', 20)}<p class="font-bold text-yellow-600">3</p><p class="text-xs text-gray-600">Cumple</p></div>
-          <div class="text-center p-3 bg-green-50 rounded-lg border border-green-200">${APP.getIconSVG('Star', 'mx-auto mb-1 fill-green-400 text-green-400', 20)}<p class="font-bold text-green-600">4</p><p class="text-xs text-gray-600">Supera</p></div>
-          <div class="text-center p-3 bg-purple-50 rounded-lg border border-purple-200">${APP.getIconSVG('Star', 'mx-auto mb-1 fill-purple-400 text-purple-400', 20)}<p class="font-bold text-purple-600">5</p><p class="text-xs text-gray-600">Excepcional</p></div>
-        </div>
-      </div>
-
       <!-- Secciones dinámicas de competencias -->
       <div id="competency-sections-container"></div>
 
@@ -136,6 +124,18 @@ const APP = {
         </div>
         <div id="overall-categories-summary" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
           <!-- Dynamic categories will be rendered here -->
+        </div>
+      </div>
+
+      <!-- Leyenda de escala -->
+      <div class="bg-white p-6 rounded-lg shadow-md mb-6 border border-gray-100">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">Referencia — Escala de Evaluación</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-5 gap-3">
+          <div class="text-center p-3 bg-red-50 rounded-lg border border-red-100">${APP.getIconSVG('Star', 'mx-auto mb-1 fill-red-400 text-red-400', 20)}<p class="font-bold text-red-600">1</p><p class="text-xs text-gray-600">Muy por debajo</p></div>
+          <div class="text-center p-3 bg-orange-50 rounded-lg border border-orange-100">${APP.getIconSVG('Star', 'mx-auto mb-1 fill-orange-400 text-orange-400', 20)}<p class="font-bold text-orange-600">2</p><p class="text-xs text-gray-600">Por debajo</p></div>
+          <div class="text-center p-3 bg-yellow-50 rounded-lg border border-yellow-100">${APP.getIconSVG('Star', 'mx-auto mb-1 fill-yellow-400 text-yellow-400', 20)}<p class="font-bold text-yellow-600">3</p><p class="text-xs text-gray-600">Cumple Expectativas</p></div>
+          <div class="text-center p-3 bg-green-50 rounded-lg border border-green-100">${APP.getIconSVG('Star', 'mx-auto mb-1 fill-green-400 text-green-400', 20)}<p class="font-bold text-green-600">4</p><p class="text-xs text-gray-600">Supera Expectativas</p></div>
+          <div class="text-center p-3 bg-purple-50 rounded-lg border border-purple-100">${APP.getIconSVG('Star', 'mx-auto mb-1 fill-purple-400 text-purple-400', 20)}<p class="font-bold text-purple-600">5</p><p class="text-xs text-gray-600">Excepcional</p></div>
         </div>
       </div>
 

@@ -11,7 +11,9 @@ APP.getIconSVG = (name, classes = 'text-white', size = 24) => {
     Printer: '<path d="M6 9V2H18V9"/><path d="M6 18H18V12H6V18"/><path d="M6 12V9H18V12"/>',
     Download: '<path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M20 21H4"/>',
     Upload: '<path d="M12 21V9"/><path d="M7 14l5-5 5 5"/><path d="M20 21H4"/>',
-    Save: '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>'
+    Save: '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>',
+    ClipboardCheck: '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/><path d="M16 4H8a2 2 0 0 0-2 2v1h12V6a2 2 0 0 0-2-2z"/>',
+    BookOpen: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>'
   };
   const path = icons[name] || '';
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="${classes}">${path}</svg>`;
@@ -37,24 +39,26 @@ APP.calculateAverage = (category, items) => {
 };
 
 APP.calculateOverallScore = () => {
-  // Aggregate all items from dynamic categories
-  const allCompItems = [];
+  const sectionAverages = [];
+
+  // 1. Competency Section Averages
   APP.ALL_COMPETENCIES.forEach(sec => {
-    sec.competencies.forEach(c => allCompItems.push({ category: sec.category, id: c.id }));
+    const avg = parseFloat(APP.calculateAverage(sec.category, sec.competencies));
+    if (avg > 0) {
+      sectionAverages.push(avg);
+    }
   });
 
-  const compVals = allCompItems.map(i => APP.getRating(i.category, i.id)).filter(v => v > 0);
+  // 2. KPI Section Average
+  const kpiAvg = parseFloat(APP.calculateKpiAverage());
+  if (kpiAvg > 0) {
+    sectionAverages.push(kpiAvg);
+  }
 
-  // Also consider KPI average if we want it in the global score
-  // Based on instructions "Cálculo de promedio general de toda la evaluación"
-  // If we want a simple average of all rated items:
+  if (sectionAverages.length === 0) return '0.00';
 
-  const kpiVals = APP.kpiTasks.map(task => APP.kpiRatings[task.id] || 0).filter(v => v > 0);
-
-  const totalVals = [...compVals, ...kpiVals];
-
-  if (!totalVals.length) return 0;
-  return (totalVals.reduce((a, b) => a + b, 0) / totalVals.length).toFixed(2);
+  const sum = sectionAverages.reduce((a, b) => a + b, 0);
+  return (sum / sectionAverages.length).toFixed(2);
 };
 
 APP.getPerformanceLevel = (score) => {
