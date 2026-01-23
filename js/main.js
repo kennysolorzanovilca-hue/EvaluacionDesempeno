@@ -88,15 +88,15 @@ const APP = {
           
           <div>
             <label for="emp-date" class="block text-sm font-semibold text-gray-600 mb-1">Fecha de Evaluación</label>
-            <input id="emp-date" type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-primary focus:ring-1 focus:ring-primary" />
+            <input id="emp-date" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-primary focus:ring-1 focus:ring-primary" placeholder="DD/MM/AAAA" />
           </div>
           <div>
             <label for="emp-period-start" class="block text-sm font-semibold text-gray-600 mb-1">Inicio de periodo</label>
-            <input id="emp-period-start" type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-primary focus:ring-1 focus:ring-primary" />
+            <input id="emp-period-start" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-primary focus:ring-1 focus:ring-primary" placeholder="DD/MM/AAAA" />
           </div>
           <div>
             <label for="emp-period-end" class="block text-sm font-semibold text-gray-600 mb-1">Fin de periodo</label>
-            <input id="emp-period-end" type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-primary focus:ring-1 focus:ring-primary" />
+            <input id="emp-period-end" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-primary focus:ring-1 focus:ring-primary" placeholder="DD/MM/AAAA" />
           </div>
         </div>
       </div>
