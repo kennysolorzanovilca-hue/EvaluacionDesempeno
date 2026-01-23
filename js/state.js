@@ -37,6 +37,17 @@ APP.loadState = () => {
   }
 };
 
+/**
+ * Resets all evaluation data (ratings, KPIs, and comments)
+ * Used when switching evaluators or clearing the form
+ */
+APP.resetAllRatings = () => {
+  APP.ratings = {};
+  APP.kpiRatings = {};
+  APP.comments = { kpis: '', strengths: '', improvement: '', development: '' };
+  APP.saveState();
+};
+
 APP.clearState = () => {
   if (!confirm('¿Estás seguro de que quieres limpiar toda la evaluación? Esta acción no se puede deshacer.')) {
     return;

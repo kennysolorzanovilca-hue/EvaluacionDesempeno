@@ -8,6 +8,22 @@ if (!APP.kpiRatings) {
     APP.kpiRatings = {}; // { taskId: rating }
 }
 
+// --- Data Management ---
+
+/**
+ * Resets all KPI ratings to initial state
+ * Called when switching between evaluators
+ */
+APP.resetKpiData = () => {
+    APP.kpiRatings = {};
+    APP.saveState();
+
+    // Refresh UI if KPI section is already initialized
+    if (APP.refreshKpiUi) {
+        APP.refreshKpiUi();
+    }
+};
+
 // --- Calculation Logic ---
 
 APP.calculateKpiAverage = () => {

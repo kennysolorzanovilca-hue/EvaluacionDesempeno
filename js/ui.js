@@ -155,24 +155,53 @@ APP.renderOverallSummaryGrid = () => {
     }`;
 };
 
+/**
+ * Handles evaluator (name) change event
+ * Resets KPI data, updates user-specific competencies, and re-initializes the app
+ */
+APP.handleEvaluatorChange = (newEvaluatorName) => {
+  if (!APP.userConfigs[newEvaluatorName]) {
+    console.warn(`No configuration found for evaluator: ${newEvaluatorName}`);
+    return;
+  }
+
+  // Reset all ratings and comments when switching evaluators
+  if (APP.resetAllRatings) {
+    APP.resetAllRatings();
+  }
+
+  // Update user-specific competencies and tasks
+  APP.updateUserData(newEvaluatorName);
+
+  // Save state and re-initialize
+  APP.saveState();
+  APP.init(true); // Re-initialize without wiping data
+};
+
+/**
+ * Binds employee form fields to APP state
+ * Sets up event listeners for form inputs and handles evaluator selection
+ */
 APP.bindEmpForm = () => {
   const fields = ['name', 'code', 'area', 'specialization', 'supervisor', 'period-start', 'period-end', 'date'];
+
   fields.forEach(f => {
     const el = document.getElementById(`emp-${f}`);
     if (!el) return;
+
+    // Set initial value from state
     el.value = APP.empForm[f] || '';
 
     // Use 'change' for select and 'input' for text/date
     const eventType = el.tagName === 'SELECT' ? 'change' : 'input';
 
     el.addEventListener(eventType, (e) => {
-      APP.empForm[f] = e.target.value;
+      const newValue = e.target.value;
+      APP.empForm[f] = newValue;
 
-      // If name changes, we need to update the competency data and re-render
-      if (f === 'name' && APP.userConfigs[e.target.value]) {
-        APP.updateUserData(e.target.value);
-        APP.saveState();
-        APP.init(true); // Re-initialize without wiping data
+      // Handle evaluator name change separately
+      if (f === 'name') {
+        APP.handleEvaluatorChange(newValue);
       } else {
         APP.saveState();
       }
